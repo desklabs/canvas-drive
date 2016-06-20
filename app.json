@@ -26,7 +26,7 @@
       "description": "The adapter to use for the app; currently we only support dropbox.",
       "value": "dropbox_adapter",
       "required": true
-    }
+    },
     "DROPBOX_ACCESS_TOKEN": {
       "description": "Access token for your dropbox account (goo.gl/L1zyZB).",
       "value": "",
