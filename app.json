@@ -1,0 +1,45 @@
+{
+  "name": "Desk.com Drive",
+  "description": "Use dropbox to share files within Desk.com Next-Gen Agent.",
+  "keywords": ["Desk.com", "Customer Service", "Productivity", "File Share"],
+  "website": "https://desklabs.github.io/canvas-drive",
+  "repository": "https://github.com/desklabs/canvas-drive",
+  "logo": "https://avatars3.githubusercontent.com/u/12802337?v=3&s=200",
+  "success_url": "https://login.desk.com",
+  "env": {
+    "SESSION_SECRET": {
+      "description": "A secret key for verifying the integrity of signed cookies.",
+      "generator": "secret",
+      "required": true
+    },
+    "DESK_DOMAIN": {
+      "description": "Full domain to your Desk.com instance.",
+      "value": "https://example.desk.com",
+      "required": true
+    },
+    "SHARED_KEY": {
+      "description": "Signed request shared key (goo.gl/Pam9Od).",
+      "value": "",
+      "required": true
+    },
+    "ADAPTER": {
+      "description": "The adapter to use for the app; currently we only support dropbox.",
+      "value": "dropbox_adapter",
+      "required": true
+    }
+    "DROPBOX_ACCESS_TOKEN": {
+      "description": "Access token for your dropbox account (goo.gl/L1zyZB).",
+      "value": "",
+      "required": true
+    }
+  },
+  "formation": {
+    "web": {
+      "quantity": 1,
+      "size": "Standard-1X"
+    }
+  },
+  "buildpacks": [{
+    "url": "heroku/ruby"
+  }]
+}
