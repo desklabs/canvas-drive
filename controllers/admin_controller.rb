@@ -14,7 +14,10 @@ class AdminController < ApplicationController
   end
   
   post '/' do
-    redirect '/?success=true' if validator.valid? && store_config
+    if validator.valid? && store_config
+      session.delete(:heroku)
+      redirect '/?success=true'
+    end
     title 'Admin'
     style 'css/admin.css'
     erb :admin

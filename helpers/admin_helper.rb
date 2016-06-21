@@ -9,14 +9,15 @@ module AdminHelper
   end
   
   def subdomain
-    settings.development? ? 'canvas-drive' : request.host.split('.').first
+    settings.development? ? 'glacial-temple-66068' : request.host.split('.').first
   end
   
   def store_config
-    heroku_client.request({
+    heroku_client.patch({
       method: 'PATCH',
       path: "/apps/#{subdomain}/config-vars",
-      body: JSON.fast_generate(validator.to_config)
+      body: JSON.fast_generate(validator.to_config),
+      headers: { "Accept" => "application/vnd.heroku+json; version=3" }
     }).status == 200
   end
   
