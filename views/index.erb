@@ -1,111 +1,91 @@
-<!DOCTYPE html>
-<html lang="en">
-  <head>
-    <meta charset="utf-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>File Browser</title>
-    <link href="css/bootstrap.min.css" rel="stylesheet">
-    <link href="css/fileinput.min.css" rel="stylesheet">
-    <link href="css/styles.css" rel="stylesheet">
-    <!-- HTML5 shim and Respond.js for IE8 support of HTML5 elements and media queries -->
-    <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
-    <!--[if lt IE 9]>
-      <script src="https://oss.maxcdn.com/html5shiv/3.7.2/html5shiv.min.js"></script>
-      <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
-    <![endif]-->
-  </head>
-  <body>
-    <div class="container-fluid">
-      <!-- We don't support search just yet!
-      <div class="row header">
-        <form action="/search" method="GET" class="search">
-          <input type="text" name="search" placeholder="Search ...">
-        </form>
+<div class="container-fluid">
+  <!-- We don't support search just yet!
+  <div class="row header">
+    <form action="/search" method="GET" class="search">
+      <input type="text" name="search" placeholder="Search ...">
+    </form>
+  </div>
+  -->
+  <div class="row actions">
+    <div class="pull-left">
+      <button type="button" class="btn btn-primary btn-sm" data-toggle="modal" data-target="#upload">
+        <i class="glyphicon glyphicon-upload" aria-hidden="true"></i> Upload
+      </button>
+    </div>
+    <div class="pull-right">
+      <div class="btn-group btn-group-sm" role="group" aria-label="sorting" id="sort">
+        <button type="button" class="btn btn-default active" data-sort="name">Name</button>
+        <button type="button" class="btn btn-default" data-sort="size">Size</button>
+        <button type="button" class="btn btn-default" data-sort="modified">Modified</button>
       </div>
-      -->
-      <div class="row actions">
-        <div class="pull-left">
-          <button type="button" class="btn btn-primary btn-sm" data-toggle="modal" data-target="#upload">
-            <i class="glyphicon glyphicon-upload" aria-hidden="true"></i> Upload
+    </div>
+  </div>
+  <div class="row files">
+    <table class="table table-striped">
+      <thead>
+        <tr>
+          <th>Name</th>
+          <th width="104">Modified</th>
+          <th width="48">Size</th>
+          <th width="86">Actions</th>
+        </tr>
+      </thead>
+      <tbody></tbody>
+    </table>
+  </div>
+</div>
+
+<div class="modal fade" tabindex="-1" role="dialog" id="upload" data-backdrop="false">
+  <div class="modal-dialog modal-sm">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+        <h4 class="modal-title">Upload New File</h4>
+      </div>
+      <form class="modal-body">
+        <div class="form-group">
+          <input id="file-upload" name="file" type="file">
+          <div id="errorBlock" class="help-block"></div>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+
+<script id="template" type="text/x-handlebars-template">
+  {{#each files}}
+    <tr>
+      <td>
+        <span data-toggle="tooltip" data-placement="top" title="{{name}}">{{name}}</span>
+      </td>
+      <td>
+        <span data-toggle="tooltip" data-placement="top" title="{{formatDate modified 'long'}} - {{formatTime modified 'long'}}">{{formatDate modified 'short'}} {{formatTime modified 'short'}}</span>
+      </td>
+      <td>
+        <span data-toggle="tooltip" data-placement="top" title="{{formatSize size}}">{{formatSize size}}</span>
+      </td>
+      <td>
+        <div class="btn-group btn-group-xs" role="group" aria-label="file actions">
+          <button type="button" class="btn btn-success" data-file="{{name}}">
+            <i class="glyphicon glyphicon-share" aria-hidden="true"></i>
+          </button>
+          <button type="button" class="btn btn-primary" data-file="{{name}}">
+            <i class="glyphicon glyphicon-download" aria-hidden="true"></i>
+          </button>
+          <button type="button" class="btn btn-danger" data-file="{{name}}">
+            <i class="glyphicon glyphicon-trash" aria-hidden="true"></i>
           </button>
         </div>
-        <div class="pull-right">
-          <div class="btn-group btn-group-sm" role="group" aria-label="sorting" id="sort">
-            <button type="button" class="btn btn-default active" data-sort="name">Name</button>
-            <button type="button" class="btn btn-default" data-sort="size">Size</button>
-            <button type="button" class="btn btn-default" data-sort="modified">Modified</button>
-          </div>
-        </div>
-      </div>
-      <div class="row files">
-        <table class="table table-striped">
-          <thead>
-            <tr>
-              <th>Name</th>
-              <th width="104">Modified</th>
-              <th width="48">Size</th>
-              <th width="86">Actions</th>
-            </tr>
-          </thead>
-          <tbody></tbody>
-        </table>
-      </div>
-    </div>
-    
-    <div class="modal fade" tabindex="-1" role="dialog" id="upload" data-backdrop="false">
-      <div class="modal-dialog modal-sm">
-        <div class="modal-content">
-          <div class="modal-header">
-            <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-            <h4 class="modal-title">Upload New File</h4>
-          </div>
-          <form class="modal-body">
-            <div class="form-group">
-              <input id="file-upload" name="file" type="file">
-              <div id="errorBlock" class="help-block"></div>
-            </div>
-          </form>
-        </div>
-      </div>
-    </div>
-    
-    <script id="template" type="text/x-handlebars-template">
-      {{#each files}}
-        <tr>
-          <td>
-            <span data-toggle="tooltip" data-placement="top" title="{{name}}">{{name}}</span>
-          </td>
-          <td>
-            <span data-toggle="tooltip" data-placement="top" title="{{formatDate modified 'long'}} - {{formatTime modified 'long'}}">{{formatDate modified 'short'}} {{formatTime modified 'short'}}</span>
-          </td>
-          <td>
-            <span data-toggle="tooltip" data-placement="top" title="{{formatSize size}}">{{formatSize size}}</span>
-          </td>
-          <td>
-            <div class="btn-group btn-group-xs" role="group" aria-label="file actions">
-              <button type="button" class="btn btn-success" data-file="{{name}}">
-                <i class="glyphicon glyphicon-share" aria-hidden="true"></i>
-              </button>
-              <button type="button" class="btn btn-primary" data-file="{{name}}">
-                <i class="glyphicon glyphicon-download" aria-hidden="true"></i>
-              </button>
-              <button type="button" class="btn btn-danger" data-file="{{name}}">
-                <i class="glyphicon glyphicon-trash" aria-hidden="true"></i>
-              </button>
-            </div>
-          </td>
-        </tr>
-      {{/each}}
-    </script>
-    
-    <script src="js/jquery.min.js"></script>
-    <script src="js/bootstrap.min.js"></script>
-    <script src="js/fileinput.min.js"></script>
-    <script src="js/filesize.min.js"></script>
-    <script src="js/handlebars.min.js"></script>
-    <script src="js/handlebars-intl.min.js"></script>
-    <script src="js/desk-canvas-all.js"></script>
-    <script src="js/script.js"></script>
-  </body>
-</html>
+      </td>
+    </tr>
+  {{/each}}
+</script>
+
+<script src="js/jquery.min.js"></script>
+<script src="js/bootstrap.min.js"></script>
+<script src="js/fileinput.min.js"></script>
+<script src="js/filesize.min.js"></script>
+<script src="js/handlebars.min.js"></script>
+<script src="js/handlebars-intl.min.js"></script>
+<script src="js/desk-canvas-all.js"></script>
+<script src="js/script.js"></script>

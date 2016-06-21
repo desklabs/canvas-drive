@@ -5,7 +5,7 @@
   "website": "https://desklabs.github.io/canvas-drive",
   "repository": "https://github.com/desklabs/canvas-drive",
   "logo": "https://avatars3.githubusercontent.com/u/12802337?v=3&s=200",
-  "success_url": "https://login.desk.com",
+  "success_url": "/admin",
   "env": {
     "SESSION_SECRET": {
       "description": "A secret key for verifying the integrity of signed cookies.",

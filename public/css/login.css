@@ -1,0 +1,29 @@
+.container {
+  margin-top: 50px;
+}
+
+.panel-heading {
+  padding: 5px 15px;
+}
+
+.panel-footer {
+	padding: 1px 15px;
+	color: #A0A0A0;
+}
+
+.profile-img {
+	width: 48px;
+	height: 48px;
+	margin: 24px auto;
+	display: block;
+	-moz-border-radius: 50%;
+	-webkit-border-radius: 50%;
+	border-radius: 50%;
+}
+
+.panel-footer {
+  color: #31708f;
+  background-color: #d9edf7;
+  border-color: #bce8f1;
+  text-align: center;
+}

@@ -2,8 +2,12 @@ require_relative 'base_adapter'
 require 'dropbox_sdk'
 
 class DropboxAdapter < BaseAdapter
-  def initialize
-    @client = DropboxClient.new(ENV['DROPBOX_ACCESS_TOKEN'])
+  MAPPING = {
+    access_token: 'DROPBOX_ACCESS_TOKEN'
+  }
+  
+  def initialize(args = {})
+    @client = DropboxClient.new(args[:access_token] || ENV[MAPPING[:access_token]])
     @refactor = lambda do |item|
       {
         path: item['path'],
@@ -54,4 +58,13 @@ class DropboxAdapter < BaseAdapter
     end
   end
 
+
+  class Validator < ActiveModel::Validator
+    def validate(record)
+      ad = DropboxAdapter.new(record.send(:dropbox_adapter))
+      ad.instance_variable_get(:@client).account_info.is_a?(Hash)
+    rescue DropboxError
+      record.errors.add(:dropbox_adapter, 'invalid credentials')
+    end
+  end
 end

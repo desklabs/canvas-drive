@@ -1,0 +1,59 @@
+<div class="container">
+  <div class="row">
+		<div class="col-sm-10 col-md-8 col-md-offset-2">
+			<form role="form" class="form-horizontal panel panel-default" action="/admin" method="post">
+				<div class="panel-heading">
+					<h2>Setup Application</h2>
+				</div>
+				<div class="panel-body">
+				  <% if @validator %>
+				    <div class="alert alert-danger" role="alert">
+  				    <% @validator.errors.each do |attribute, error| %>
+  				      <p><strong><%= attribute.to_s.humanize %>:</strong> <%= error %></p>
+  				    <% end %>
+  				  </div>
+				  <% end %>
+          <div class="form-group">
+            <label for="desk_domain" class="col-sm-3 control-label">Domain</label>
+            <div class="col-sm-9">
+              <input type="url" id="desk_domain" value="<%= @validator ? @validator.desk_domain : '' %>" name="desk_domain" class="form-control" placeholder="https://example.desk.com">
+            </div>
+          </div>
+          <div class="form-group">
+            <label for="shared_key" class="col-sm-3 control-label">Shared Key</label>
+            <div class="col-sm-9">
+              <input type="password" id="shared_key" name="shared_key" class="form-control" placeholder="Shared Key">
+              <span class="help-block">Paste the shared key from the integration url (<a href="https://goo.gl/Pam9Od" target="_blank">goo.gl/Pam9Od</a>).</span>
+            </div>
+          </div>
+          <div class="form-group">
+            <label for="adapter" class="col-sm-3 control-label">Adapter</label>
+            <div class="col-sm-9">
+              <select id="adapter" name="adapter" class="form-control">
+                <option value="dropbox_adapter">Dropbox</option>
+              </select>
+            </div>
+          </div>
+					<fieldset id="dropbox_adapter">
+					  <legend>Dropbox Settings</legend>
+            <div class="form-group">
+              <label for="dropbox_access_token" class="col-sm-3 control-label">Access Token</label>
+              <div class="col-sm-9">
+                <input type="password" name="dropbox_adapter[access_token]" class="form-control" id="dropbox_access_token" placeholder="Access Token">
+                <span class="help-block">Generate an access token for your dropbox account (<a href="https://goo.gl/L1zyZB" target="_blank">goo.gl/L1zyZB</a>).</span>
+              </div>
+            </div>
+					</fieldset>
+				</div>
+				<div class="panel-footer">
+				  <div class="row">
+            <div class="col-sm-offset-3 col-sm-9">
+              <button type="submit" class="btn btn-primary">Submit</button>
+              <button type="submit" class="btn btn-default">Reset</button>
+            </div>
+				  </div>
+				</div>
+      </form>
+		</div>
+	</div>
+</div>
