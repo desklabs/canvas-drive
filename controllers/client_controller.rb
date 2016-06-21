@@ -23,6 +23,7 @@ class ClientController < ApplicationController
   
   get '/' do
     title "File Explorer"
+    style "css/fileinput.min.css"
     erb :index
   end
   
