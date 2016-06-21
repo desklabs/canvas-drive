@@ -1,1 +1,1 @@
-web: bundle exec ruby server.rb
+web: rackup 'config.ru' -p $PORT -o $IP
