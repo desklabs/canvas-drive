@@ -1,1 +1,1 @@
-web: rackup 'config.ru' -p $PORT -o $IP
+web: rackup config.ru -p $PORT
