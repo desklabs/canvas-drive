@@ -65,11 +65,13 @@ module AdminHelper
           end
         end
         
-        adapter_config = i.adapter_config.inject({}) do |hash, (k, v)|
-          hash.merge(k => config[v]) if config.key?(v)
+        if adapter
+          adapter_config = i.adapter_config.inject({}) do |hash, (k, v)|
+            hash.merge(k => config[v]) if config.key?(v)
+          end 
+          
+          i.send(:"#{i.adapter}=", adapter_config)
         end
-        
-        i.send :"#{i.adapter}=", adapter_config
       end
     end
     
@@ -85,7 +87,7 @@ module AdminHelper
     end
     
     def adapter_config
-      "#{adapter.classify}::MAPPING".constantize
+      "#{adapter.to_s.classify}::MAPPING".constantize
     end
     
     def to_config
