@@ -6,50 +6,78 @@
 					<h2>Setup Application</h2>
 				</div>
 				<div class="panel-body">
-				  <% if @validator %>
-				    <div class="alert alert-danger" role="alert">
+				  <% if success %>
+				    <div class="alert alert-success" role="alert">
+				      <p><strong>Glorious!</strong> Your Desk.com Drive application is set up. Add it to the page layout!</p>
+				    </div>
+				  <% end %>
+				  <% if @validator.errors.count > 0 %>
+  			    <div class="alert alert-danger" role="alert">
   				    <% @validator.errors.each do |attribute, error| %>
   				      <p><strong><%= attribute.to_s.humanize %>:</strong> <%= error %></p>
   				    <% end %>
-  				  </div>
+				    </div>
 				  <% end %>
           <div class="form-group">
             <label for="desk_domain" class="col-sm-3 control-label">Domain</label>
             <div class="col-sm-9">
-              <input type="url" id="desk_domain" value="<%= @validator ? @validator.desk_domain : '' %>" name="desk_domain" class="form-control" placeholder="https://example.desk.com">
+              <input type="url" id="desk_domain" value="<%= @validator.desk_domain %>" name="desk_domain" class="form-control" placeholder="https://example.desk.com" autofocus>
             </div>
           </div>
           <div class="form-group">
             <label for="shared_key" class="col-sm-3 control-label">Shared Key</label>
             <div class="col-sm-9">
-              <input type="password" id="shared_key" name="shared_key" class="form-control" placeholder="Shared Key">
+              <input id="shared_key" value="<%= @validator.shared_key %>" name="shared_key" class="form-control" placeholder="Shared Key">
               <span class="help-block">Paste the shared key from the integration url (<a href="https://goo.gl/Pam9Od" target="_blank">goo.gl/Pam9Od</a>).</span>
+            </div>
+          </div>
+          <div class="form-group">
+            <label for="session_secret" class="col-sm-3 control-label">Session Secret</label>
+            <div class="col-sm-9">
+              <input id="session_secret" value="<%= @validator.session_secret %>" name="session_secret" class="form-control" placeholder="Session Secret">
             </div>
           </div>
           <div class="form-group">
             <label for="adapter" class="col-sm-3 control-label">Adapter</label>
             <div class="col-sm-9">
               <select id="adapter" name="adapter" class="form-control">
-                <option value="dropbox_adapter">Dropbox</option>
+                <option value="">-- Please Select --</option>
+                <% adapters.each_pair do |value, name| %>
+                <option value="<%= value %>"<%= value.to_s == @validator.adapter ? 'selected' : '' %>><%= name %></option>
+                <% end %>
               </select>
+              <script>
+                (function() {
+                  var $  = document.querySelector
+                    , $$ = document.querySelectorAll
+                  
+                  document.querySelector('#adapter').addEventListener('change', function() {
+                    document.querySelectorAll('fieldset').forEach(function(item) { item.classList.add('hidden') })
+                    document.querySelector('#' + document.querySelector('#adapter').value).classList.remove('hidden')
+                  })
+                }())
+              </script>
             </div>
           </div>
-					<fieldset id="dropbox_adapter">
-					  <legend>Dropbox Settings</legend>
-            <div class="form-group">
-              <label for="dropbox_access_token" class="col-sm-3 control-label">Access Token</label>
-              <div class="col-sm-9">
-                <input type="password" name="dropbox_adapter[access_token]" class="form-control" id="dropbox_access_token" placeholder="Access Token">
-                <span class="help-block">Generate an access token for your dropbox account (<a href="https://goo.gl/L1zyZB" target="_blank">goo.gl/L1zyZB</a>).</span>
+          <% adapters.each_pair do |value, name| %>
+  					<fieldset id="<%= value %>" class="<%= value.to_s != @validator.adapter ? 'hidden' : '' %>">
+  					  <legend><%= name %> Settings</legend>
+  					  <% "#{value.to_s.classify}::MAPPING".constantize.each_pair do |key, v| %>
+              <div class="form-group">
+                <label for="<%= value.to_s + '-' + key.to_s %>" class="col-sm-3 control-label"><%= key.to_s.humanize %></label>
+                <div class="col-sm-9">
+                  <input name="<%= value %>[<%= key %>]" value="<%= @validator.send(value)[key.to_sym] %>" class="form-control" id="<%= value.to_s + '-' + key.to_s %>" placeholder="<%= key.to_s.humanize %>">
+                </div>
               </div>
-            </div>
-					</fieldset>
+              <% end %>
+  					</fieldset>
+  				<% end %>
 				</div>
 				<div class="panel-footer">
 				  <div class="row">
             <div class="col-sm-offset-3 col-sm-9">
               <button type="submit" class="btn btn-primary">Submit</button>
-              <button type="submit" class="btn btn-default">Reset</button>
+              <a href="/admin/logout" class="btn btn-default">Logout</a>
             </div>
 				  </div>
 				</div>

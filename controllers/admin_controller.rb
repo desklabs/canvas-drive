@@ -4,25 +4,26 @@ class AdminController < ApplicationController
   helpers AdminHelper
   
   before /^\/(?!login)/ do
-    if !session.key?(:heroku)
+    if !authenticated?
       redirect '/admin/login'
     end
+  end
+  
+  before do
+    validator if authenticated?
   end
   
   get '/' do
     title 'Admin'
     style 'css/admin.css'
-    erb :admin
+    erb :admin, locals: { adapters: BaseAdapter::ADAPTERS, success: params[:success] }
   end
   
   post '/' do
-    if validator.valid? && store_config
-      session.delete(:heroku)
-      redirect '/?success=true'
-    end
+    redirect '/admin/?success=true' if validator.valid? && store_config
     title 'Admin'
     style 'css/admin.css'
-    erb :admin
+    erb :admin, locals: { adapters: BaseAdapter::ADAPTERS, success: params[:success] }
   end
   
   get '/login' do
@@ -32,14 +33,13 @@ class AdminController < ApplicationController
   end
   
   post '/login' do
-    account = JSON.parse(heroku_client(params[:username], params[:password]).get(path: '/account').body)
-    if account['email'] == params[:username]
-      # app = JSON.parse(heroku_client.get(path: "/apps/#{subdomain}").body)
-      # if app['owner_email'] == params[:username]
-        session[:heroku] = { username: params[:username], password: params[:password] }
-        redirect '/admin'
-      # end
-    end
+    session[:heroku] = { username: params[:username], password: params[:password] }
+    redirect '/admin' if authenticated?
+    redirect '/admin/logout'
+  end
+  
+  get '/logout' do
+    session.clear
     redirect '/admin/login'
   end
 end

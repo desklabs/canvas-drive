@@ -1,3 +1,7 @@
+require 'json'
+require 'base64'
+require 'openssl'
+
 module ClientHelper
   def parse_signed_request(request, max_age=3600)
     encoded_sig, enc_envelope = request.split('.', 2)

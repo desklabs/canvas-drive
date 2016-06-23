@@ -1,5 +1,9 @@
+require 'active_model'
+require 'active_support'
 
 class BaseAdapter
+  ADAPTERS = {}
+  
   def create_folder(params)
     {}
   end

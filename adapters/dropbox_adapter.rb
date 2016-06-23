@@ -2,6 +2,7 @@ require_relative 'base_adapter'
 require 'dropbox_sdk'
 
 class DropboxAdapter < BaseAdapter
+  BaseAdapter::ADAPTERS.merge!({ dropbox_adapter: 'Dropbox' })
   MAPPING = {
     access_token: 'DROPBOX_ACCESS_TOKEN'
   }
