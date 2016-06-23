@@ -1,12 +1,12 @@
 require_relative 'application_controller'
+require 'active_support'
 
 class ClientController < ApplicationController
   helpers ClientHelper
   
   configure :production, :development do
     set :protection, frame_options: "ALLOW-FROM #{ENV['DESK_DOMAIN']}"
-    clazz = ENV['ADAPTER'].split('_').collect!{ |w| w.capitalize }.join
-    set :adapter, Object.const_get(clazz).new
+    set :adapter, ENV['ADAPTER'].classify.constantize.new if ENV['ADAPTER']
   end
   
   before do
