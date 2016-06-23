@@ -65,7 +65,7 @@ module AdminHelper
           end
         end
         
-        if adapter
+        if i.adapter
           adapter_config = i.adapter_config.inject({}) do |hash, (k, v)|
             hash.merge(k => config[v]) if config.key?(v)
           end 
