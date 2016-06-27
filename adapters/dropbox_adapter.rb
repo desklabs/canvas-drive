@@ -18,7 +18,7 @@ class DropboxAdapter < BaseAdapter
   
   class Validator < ActiveModel::Validator
     def validate(record)
-      $logger.info record.send(:dropbox_adapter)
+      $logger.info record.send(:dropbox_adapter).inspect
       ad = DropboxAdapter.new(record.send(:dropbox_adapter))
       ad.client.account_info.is_a?(Hash)
     rescue DropboxError => err
@@ -28,6 +28,7 @@ class DropboxAdapter < BaseAdapter
   end
 
   def client
+    puts @options.inspect
     $logger.info @options.inspect
     $logger.info ENV[MAPPING[:access_token]]
     @client ||= DropboxClient.new(@options[:access_token] || ENV[MAPPING[:access_token]])
