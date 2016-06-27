@@ -18,6 +18,7 @@ class DropboxAdapter < BaseAdapter
   
   class Validator < ActiveModel::Validator
     def validate(record)
+      $logger.info record.send(:dropbox_adapter)
       ad = DropboxAdapter.new(record.send(:dropbox_adapter))
       ad.client.account_info.is_a?(Hash)
     rescue DropboxError => err
