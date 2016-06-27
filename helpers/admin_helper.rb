@@ -1,6 +1,5 @@
 require 'platform-api'
 require 'active_model'
-require 'active_support/core_ext/hash'
 
 module AdminHelper
   def heroku
@@ -35,7 +34,7 @@ module AdminHelper
   end
   
   def validator
-    @validator ||= FormValidator.from_params(params.with_indifferent_access) if request.form_data?
+    @validator ||= FormValidator.from_params(params) if request.form_data?
     @validator ||= FormValidator.from_config(get_config)
   end
   
