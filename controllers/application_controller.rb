@@ -1,3 +1,5 @@
+require 'logger'
+
 class ApplicationController < Sinatra::Base
   helpers ApplicationHelper
   set :views, File.expand_path('../../views', __FILE__)
@@ -10,6 +12,8 @@ class ApplicationController < Sinatra::Base
     set :bind, ENV['IP'] || '0.0.0.0'
     set :session_secret, ENV['SESSION_SECRET']
     set :public_folder, File.expand_path('../../public', __FILE__)
+    
+    $logger = ::Logger.new(STDOUT)
   end
   
   configure :development do
