@@ -20,7 +20,7 @@ class DropboxAdapter < BaseAdapter
     def validate(record)
       ad = DropboxAdapter.new(record.send(:dropbox_adapter))
       ad.client.account_info.is_a?(Hash)
-    rescue DropboxError
+    rescue StandardError
       record.errors.add(:dropbox_adapter, 'invalid credentials')
     end
   end
