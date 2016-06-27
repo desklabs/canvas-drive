@@ -1,9 +1,12 @@
 source 'https://rubygems.org'
 ruby '2.3.0'
 
+gem 'redis'
 gem 'sinatra'
 gem 'dropbox-sdk'
 gem 'net-ftp-list'
+gem 'boxr'
+gem 'google-api-client'
 
 gem 'platform-api'
 

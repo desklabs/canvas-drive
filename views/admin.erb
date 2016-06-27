@@ -66,7 +66,7 @@
               <div class="form-group">
                 <label for="<%= value.to_s + '-' + key.to_s %>" class="col-sm-3 control-label"><%= key.to_s.humanize %></label>
                 <div class="col-sm-9">
-                  <input name="<%= value %>[<%= key %>]" value="<%= @validator.send(value)[key.to_sym] if @validator.respond_to?(value) %>" class="form-control" id="<%= value.to_s + '-' + key.to_s %>" placeholder="<%= key.to_s.humanize %>">
+                  <input name="<%= value %>[<%= key %>]" value="<%= @validator.send(value)[key.to_sym] if @validator.respond_to?(value) && @validator.send(value) %>" class="form-control" id="<%= value.to_s + '-' + key.to_s %>" placeholder="<%= key.to_s.humanize %>">
                 </div>
               </div>
               <% end %>

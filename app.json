@@ -18,6 +18,9 @@
       "size": "Standard-1X"
     }
   },
+  "addons": [
+    "heroku-redis:hobby-dev"
+  ],
   "buildpacks": [{
     "url": "heroku/ruby"
   }]

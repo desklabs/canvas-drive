@@ -34,7 +34,7 @@ module AdminHelper
   end
   
   def validator
-    @validator ||= FormValidator.new(params) if request.form_data?
+    @validator ||= FormValidator.new(params || {}) if request.form_data?
     @validator ||= FormValidator.from_config(get_config)
   end
   

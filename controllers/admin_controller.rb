@@ -6,11 +6,9 @@ class AdminController < ApplicationController
   before /^\/(?!login)/ do
     if !authenticated?
       redirect '/admin/login'
+    else
+      validator
     end
-  end
-  
-  before do
-    validator if authenticated?
   end
   
   get '/' do

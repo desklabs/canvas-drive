@@ -45,6 +45,7 @@ class ClientController < ApplicationController
       status 201
       settings.adapter.create_folder(params).to_json
     rescue StandardError => err
+      logger.error err
       status 422
       { status: 422, message: err.message }.to_json
     end
@@ -57,6 +58,7 @@ class ClientController < ApplicationController
       status 200
       settings.adapter.folders(params[:folder_id]).to_json
     rescue StandardError => err
+      logger.error err
       status 404
       { status: 404, message: err.message }
     end
@@ -67,6 +69,7 @@ class ClientController < ApplicationController
       status 204
       settings.adapter.delete_folder(params[:folder_id])
     rescue StandardError => err
+      logger.error err
       status 404
       { status: 404, message: err.message }
     end
@@ -79,6 +82,7 @@ class ClientController < ApplicationController
       status 200
       settings.adapter.files(params[:folder_id]).to_json
     rescue StandardError => err
+      logger.error err
       status 404
       { status: 404, message: err.message }
     end
@@ -89,20 +93,25 @@ class ClientController < ApplicationController
     content_type :json
     begin
       status 201
+      logger.info params.inspect
       settings.adapter.create_file(params[:folder_id], params[:file]).to_json
     rescue StandardError => err
+      logger.error err
       status 422
-      { status: 422, message: err.message }.to_json
+      { status: 422, message: err.backtrace.join("\n") }.to_json
     end
   end
   
   # download
   get '/folders/:folder_id/files/:file_id' do
     begin
+      file, content = settings.adapter.download_file(params[:folder_id], params[:file_id])
       content_type 'application/octet-stream'
+      attachment file.name
       status 200
-      settings.adapter.download_file(params[:folder_id], params[:file_id])
+      content
     rescue StandardError => err
+      logger.error err
       content_type :text
       status 404
       { status: 404, message: err.message }
@@ -114,6 +123,7 @@ class ClientController < ApplicationController
       status 204
       settings.adapter.delete_file(params[:folder_id], params[:file_id])
     rescue StandardError => err
+      logger.error err
       status 404
       { status: 404, message: err.message }
     end
