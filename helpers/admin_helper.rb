@@ -1,5 +1,6 @@
 require 'platform-api'
 require 'active_model'
+require 'active_support'
 
 module AdminHelper
   def heroku
