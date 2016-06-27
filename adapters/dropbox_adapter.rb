@@ -27,6 +27,8 @@ class DropboxAdapter < BaseAdapter
   end
 
   def client
+    $logger.info @options.inspect
+    $logger.info ENV[MAPPING[:access_token]]
     @client ||= DropboxClient.new(@options[:access_token] || ENV[MAPPING[:access_token]])
   end
   
