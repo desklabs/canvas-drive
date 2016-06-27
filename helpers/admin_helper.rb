@@ -34,7 +34,7 @@ module AdminHelper
   end
   
   def validator
-    @validator ||= FormValidator.new(params || {}) if request.form_data?
+    @validator ||= FormValidator.from_param(params) if request.form_data?
     @validator ||= FormValidator.from_config(get_config)
   end
   
@@ -57,13 +57,15 @@ module AdminHelper
       validates_with "#{adapter.classify}::Validator".constantize
     end
     
+    def self.from_params(params)
+      self.new.tap do |i|
+        i.from_hash(params)
+      end
+    end
+    
     def self.from_config(config)
       self.new.tap do |i|
-        config.each_pair do |key, value|
-          if i.respond_to?(:"#{MAPPING.key(key)}=")
-            i.send(:"#{MAPPING.key(key)}=", value)
-          end
-        end
+        i.from_hash(i.clean_config(config))
         
         if i.adapter
           adapter_config = i.adapter_config.inject({}) do |hash, (k, v)|
@@ -72,6 +74,18 @@ module AdminHelper
           
           i.send(:"#{i.adapter}=", adapter_config)
         end
+      end
+    end
+    
+    def clean_config(config = {})
+      config.each_with_object({}) do |(k, v), hsh|
+        hsh[MAPPING.key(k)] = v if MAPPING.value?(k)
+      end
+    end
+    
+    def from_hash(hash = {})
+      hash.each_pair do |key, value|
+        send(:"#{key}=", value) if respond_to?(:"#{key}=")
       end
     end
     
