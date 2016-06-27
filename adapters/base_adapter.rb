@@ -59,7 +59,7 @@ class BaseAdapter
     mapping  = "#{self.class.name}::MAPPING".constantize
     @options = mapping.keys.each_with_object({}) do |k, h|
       h[k] = ENV[mapping[k]]
-    end.merge args 
+    end.merge(args.symbolize_keys)
   end
   
   def create_folder(path, folder)

@@ -26,7 +26,7 @@ class DropboxAdapter < BaseAdapter
   end
 
   def client
-    @client ||= DropboxClient.new(@options[:access_token] || @options['access_token'] || ENV[MAPPING[:access_token]])
+    @client ||= DropboxClient.new(@options[:access_token] || ENV[MAPPING[:access_token]])
   end
   
   def create_folder(id)
