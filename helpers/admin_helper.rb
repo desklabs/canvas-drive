@@ -34,8 +34,7 @@ module AdminHelper
   end
   
   def validator
-    $logger.info params.inspect
-    @validator ||= FormValidator.from_params(params) if request.form_data?
+    @validator ||= FormValidator.from_params(params.with_indifferent_access) if request.form_data?
     @validator ||= FormValidator.from_config(get_config)
   end
   
@@ -61,7 +60,6 @@ module AdminHelper
     def self.from_params(params)
       self.new.tap do |i|
         i.from_hash(params)
-        $logger.info i.inspect
       end
     end
     

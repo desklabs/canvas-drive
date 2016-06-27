@@ -18,19 +18,14 @@ class DropboxAdapter < BaseAdapter
   
   class Validator < ActiveModel::Validator
     def validate(record)
-      $logger.info record.send(:dropbox_adapter).inspect
-      ad = DropboxAdapter.new(record.send(:dropbox_adapter))
+      ad = DropboxAdapter.new(record.send(:dropbox_adapter).with_indifferent_access)
       ad.client.account_info.is_a?(Hash)
-    rescue DropboxError => err
-      $logger.error err
+    rescue DropboxError
       record.errors.add(:dropbox_adapter, 'invalid credentials')
     end
   end
 
   def client
-    puts @options.inspect
-    $logger.info @options.inspect
-    $logger.info ENV[MAPPING[:access_token]]
     @client ||= DropboxClient.new(@options[:access_token] || ENV[MAPPING[:access_token]])
   end
   
