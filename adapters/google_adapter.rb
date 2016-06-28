@@ -51,7 +51,7 @@ class GoogleAdapter < BaseAdapter
         audience: Google::Auth::ServiceAccountCredentials::TOKEN_CRED_URI,
         scope: SCOPE,
         issuer: @options[:client_email],
-        signing_key: OpenSSL::PKey::RSA.new(@options[:private_key])
+        signing_key: OpenSSL::PKey::RSA.new(@options[:private_key].gsub(' ', "\n"))
       )
     end
   end
