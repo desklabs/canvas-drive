@@ -46,16 +46,12 @@ class GoogleAdapter < BaseAdapter
   
   def auth
     @auth ||= begin
-      key = @options[:private_key].gsub(/[\s]+/, "\n")
-      puts key
-      $logger.info key
-    
       Google::Auth::ServiceAccountCredentials.new(
         token_credential_uri: Google::Auth::ServiceAccountCredentials::TOKEN_CRED_URI,
         audience: Google::Auth::ServiceAccountCredentials::TOKEN_CRED_URI,
         scope: SCOPE,
         issuer: @options[:client_email],
-        signing_key: OpenSSL::PKey::RSA.new(key)
+        signing_key: OpenSSL::PKey::RSA.new(@options[:private_key])
       )
     end
   end
