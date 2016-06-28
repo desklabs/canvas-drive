@@ -48,12 +48,11 @@
               </select>
               <script>
                 (function() {
-                  var $  = document.querySelector
-                    , $$ = document.querySelectorAll
+                  $ = function(selector) { return [].slice.call(document.querySelectorAll(selector)) }
                   
-                  document.querySelector('#adapter').addEventListener('change', function() {
-                    document.querySelectorAll('fieldset').forEach(function(item) { item.classList.add('hidden') })
-                    document.querySelector('#' + document.querySelector('#adapter').value).classList.remove('hidden')
+                  $('#adapter')[0].addEventListener('change', function() {
+                    $('fieldset').forEach(function(item) { item.classList.add('hidden') })
+                    $('#' + $('#adapter')[0].value)[0].classList.remove('hidden')
                   })
                 }())
               </script>
