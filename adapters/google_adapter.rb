@@ -37,11 +37,22 @@ class GoogleAdapter < BaseAdapter
   
   def client
     @client ||= begin
-      auth   = Google::Auth::ServiceAccountCredentials.make_creds(scope: SCOPE)
       client = Google::Apis::DriveV3::DriveService.new
       client.client_options.application_name = 'Desk.com Drive'
       client.authorization = auth
       client
+    end
+  end
+  
+  def auth
+    @auth ||= begin
+      Google::Auth::ServiceAccountCredentials.new(
+        token_credential_uri: Google::Auth::ServiceAccountCredentials::TOKEN_CRED_URI,
+        audience: Google::Auth::ServiceAccountCredentials::TOKEN_CRED_URI,
+        scope: SCOPE,
+        issuer: @options[:client_email],
+        signing_key: OpenSSL::PKey::RSA.new(@options[:private_key])
+      )
     end
   end
   
