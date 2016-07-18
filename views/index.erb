@@ -52,17 +52,17 @@
   </div>
 </div>
 
-<script id="template" type="text/x-handlebars-template">
-  {{#each files}}
+<script id="template" type="text/x-tmpl-mustache">
+  {{#files}}
     <tr>
       <td>
-        <span data-toggle="tooltip" data-placement="top" title="{{name}}">{{name}}</span>
+        <span title="{{name}}">{{name}}</span>
       </td>
       <td>
-        <span data-toggle="tooltip" data-placement="top" title="{{formatDate modified 'long'}} - {{formatTime modified 'long'}}">{{formatDate modified 'short'}} {{formatTime modified 'short'}}</span>
+        <span title="{{modifiedLong}}">{{modifiedShort}}</span>
       </td>
       <td>
-        <span data-toggle="tooltip" data-placement="top" title="{{formatSize size}}">{{formatSize size}}</span>
+        <span title="{{sizeHuman}}">{{sizeHuman}}</span>
       </td>
       <td>
         <div class="btn-group btn-group-xs" role="group" aria-label="file actions">
@@ -78,14 +78,14 @@
         </div>
       </td>
     </tr>
-  {{/each}}
+  {{/files}}
 </script>
 
 <script src="js/jquery.min.js"></script>
 <script src="js/bootstrap.min.js"></script>
 <script src="js/fileinput.min.js"></script>
 <script src="js/filesize.min.js"></script>
-<script src="js/handlebars.min.js"></script>
-<script src="js/handlebars-intl.min.js"></script>
+<script src="js/mustache.min.js"></script>
+<script src="js/moment.min.js"></script>
 <script src="js/desk-canvas-all.js"></script>
-<script src="js/script.js"></script>
+<script src="js/script.js?v=2"></script>

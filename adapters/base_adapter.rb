@@ -1,5 +1,7 @@
 require 'active_model'
+require 'active_support/core_ext/hash'
 require 'active_support/inflector'
+require 'securerandom'
 require 'json'
 require 'redis'
 
@@ -25,7 +27,7 @@ class BaseAdapter
     end
     
     def to_h
-      { id: id, name: name, modified: modified, size: size, type: type }
+      { id: id, name: name, modified: DateTime.parse(modified).to_time.iso8601, size: size, type: type }
     end
   end
   
@@ -52,6 +54,13 @@ class BaseAdapter
     
     def by_path(path)
       scan_each(match: "#{path}*").map{ |p| find(p) }
+    end
+    
+    def token(path)
+      SecureRandom.uuid.tap do |tok|
+        set(tok, path)
+        expire(tok, 86400)
+      end
     end
   end
   
@@ -84,6 +93,14 @@ class BaseAdapter
   
   def files(path)
     store.files(path)
+  end
+  
+  def token(path)
+    { token: store.token(path), path: path }
+  end
+  
+  def validate_token(token, path)
+    store.get(token) == path
   end
   
   def download_file(filder_id, file_id)

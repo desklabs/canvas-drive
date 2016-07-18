@@ -25,4 +25,12 @@ module ClientHelper
     str += '=' * (4 - str.length.modulo(4))
     Base64.decode64(str.tr('-_','+/'))
   end
+  
+  def logged_in?
+    session && session.key?(:signed_request)
+  end
+  
+  def valid_token?
+    settings.adapter.validate_token(params[:token], params[:folder_id], params[:file_id])
+  end
 end

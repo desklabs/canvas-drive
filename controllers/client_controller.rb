@@ -14,11 +14,9 @@ class ClientController < ApplicationController
       session[:signed_request] = parse_signed_request(params[:signed_request])
     end
   end
-  
-  before /^\/(?!login)/ do
-    if !session.key?(:signed_request)
-      halt 401, '<h1>Unauthorized</h1>'
-    end
+
+  before /^(?!\/(login|download))/ do
+    halt 401, '<h1>Unauthorized</h1>' unless logged_in?
   end
   
   get '/' do
@@ -93,7 +91,6 @@ class ClientController < ApplicationController
     content_type :json
     begin
       status 201
-      logger.info params.inspect
       settings.adapter.create_file(params[:folder_id], params[:file]).to_json
     rescue StandardError => err
       logger.error err
@@ -103,13 +100,28 @@ class ClientController < ApplicationController
   end
   
   # download
-  get '/folders/:folder_id/files/:file_id' do
+  get '/download/folders/:folder_id/files/:file_id' do
+    halt 401, '<h1>Unauthorized</h1>' unless logged_in? || valid_token?
     begin
       file, content = settings.adapter.download_file(params[:folder_id], params[:file_id])
       content_type 'application/octet-stream'
       attachment file.name
       status 200
       content
+    rescue StandardError => err
+      logger.error err
+      content_type :text
+      status 404
+      { status: 404, message: err.message }
+    end
+  end
+  
+  # generate token
+  get '/folders/:folder_id/files/:file_id/token' do
+    content_type :json
+    begin
+      status 200
+      settings.adapter.token(params[:folder_id], params[:file_id]).to_json
     rescue StandardError => err
       logger.error err
       content_type :text

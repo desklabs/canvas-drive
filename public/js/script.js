@@ -1,49 +1,14 @@
 "use strict";
 
-/* global jQuery, Desk, Handlebars, HandlebarsIntl, filesize, location */
+/* global jQuery, Desk, Mustache, location, filesize, moment */
 
 (function($) {
-  HandlebarsIntl.registerWith(Handlebars);
-  Handlebars.registerHelper('formatSize', function(size) {
-    return filesize(size);
-  });
-
-
-  const INTL = {
-      locales: 'en-US',
-      formats: {
-        date: {
-          short: {
-            day: 'numeric',
-            month: 'numeric',
-            year: 'numeric'
-          },
-          long: {
-            day: 'numeric',
-            month: 'long',
-            year: 'numeric'
-          }
-        },
-        time: {
-          short: {
-            hour: 'numeric',
-            minute: 'numeric'
-          },
-          long: {
-            hour: 'numeric',
-            minute: 'numeric',
-            seconds: 'numeric'
-          }
-        }
-      }
-    };
-  
   class FileExplorer {
     constructor(sr) {
       this.sr       = sr;
       this.caseId   = sr.context.environment.case.id;
       this.agentId  = sr.context.userId;
-      this.template = Handlebars.compile($('#template').html());
+      this.template = $('#template').html();
       this.element  = $('tbody');
       this._sort    = 'name';
       
@@ -109,10 +74,18 @@
     }
     
     _render() {
-      this.element.html(this.template({
-        files: this.files
-      }, { data: { intl: INTL }}));
-      $('[data-toggle="tooltip"]').tooltip();
+      this.element.html(Mustache.render(this.template, {
+        files: this.files,
+        modifiedLong: function() {
+          return moment(this.modified).format('LLL');
+        },
+        modifiedShort: function() {
+          return moment(this.modified).format('LLL');
+        },
+        sizeHuman: function() {
+          return filesize(this.size, { round: 0 });
+        }
+      }));
     }
     
     changeSort(evt) {
@@ -120,37 +93,49 @@
       this.sort = $(evt.target).addClass('active').data('sort');  
     }
     
+    _updateDraft(url, callback) {
+      Desk.canvas.client.ajax(this.sr.context.environment.case.url + '/replies/draft', {
+        client: this.sr.client,
+        method: 'GET',
+        success: function(data) {
+          if (200 === data.status) {
+            Desk.canvas.client.ajax(this.sr.context.environment.case.url + '/replies/draft', {
+              client: this.sr.client,
+              method: 'PATCH',
+              data: JSON.stringify({ body: data.payload.body + url }),
+              success: callback.bind(this)
+            });
+          }
+        }.bind(this)
+      });
+    }
+    
     action(evt) {
       var btn = $(evt.currentTarget)
-        , url = '/folders/' + this.caseId + '/files/' + btn.data('file');
+        , url = '/folders/' + this.caseId + '/files/' + btn.data('file')
+        , dwl = '/download' + url;
       btn.find('i').toggleClass('spinning');
       
       if (btn.hasClass('btn-danger')) {
-        $.ajax('/folders/' + this.caseId + '/files/' + btn.data('file'), {
+        $.ajax(url, {
           method: 'DELETE'
         }).done(this._fetchFiles.bind(this));
       } else if (btn.hasClass('btn-primary')) {
-        $('<a>').attr('href', url)
+        $('<a>').attr('href', dwl)
                 .attr('target', '_blank')
                 .get(0).click();
         btn.find('i').toggleClass('spinning');
       } else {
-        Desk.canvas.client.ajax(this.sr.context.environment.case.url + '/replies/draft', {
-          client: this.sr.client,
-          method: 'GET',
-          success: function(data) {
-            if (200 === data.status) {
-              Desk.canvas.client.ajax(this.sr.context.environment.case.url + '/replies/draft', {
-                client: this.sr.client,
-                method: 'PATCH',
-                data: JSON.stringify({ body: data.payload.body + 'https://' + location.host + url }),
-                success: function() {
-                  btn.find('i').toggleClass('spinning');
-                }
-              });
-            }
-          }.bind(this)
-        });
+        $.ajax(url + '/token', {
+          method: 'GET'
+        }).done(function(data) {
+          var url = [
+            'https://', location.host, dwl, '?token=', data.token
+          ].join('');
+          this._updateDraft(url, function() {
+            btn.find('i').toggleClass('spinning');
+          });
+        }.bind(this));
       }
     }
   }

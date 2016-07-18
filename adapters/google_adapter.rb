@@ -115,4 +115,12 @@ class GoogleAdapter < BaseAdapter
     path = "/#{folder_id.to_s}" + (file_id.nil? ? '' : "/#{file_id.to_s}")
     super path
   end
+  
+  def token(folder_id, file_id)
+    super "/#{folder_id.to_s}/#{file_id.to_s}"
+  end
+  
+  def validate_token(token, folder_id, file_id)
+    super token, "/#{folder_id.to_s}/#{file_id.to_s}"
+  end
 end
