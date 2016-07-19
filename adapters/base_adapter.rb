@@ -6,8 +6,9 @@ require 'json'
 require 'redis'
 
 class BaseAdapter
-  ADAPTERS = {}
-  MAPPING  = {}
+  ADAPTERS    = {}
+  MAPPING     = {}
+  FORM_FIELDS = {}
   
   class Item < Struct.new(:id, :name, :modified, :size, :type)
     def self.from_h(hash)
@@ -27,7 +28,7 @@ class BaseAdapter
     end
     
     def to_h
-      { id: id, name: name, modified: DateTime.parse(modified).to_time.iso8601, size: size, type: type }
+      { id: id, name: name, modified: modified, size: size, type: type }
     end
   end
   

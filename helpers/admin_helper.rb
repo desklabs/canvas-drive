@@ -22,7 +22,7 @@ module AdminHelper
   end
   
   def subdomain
-    settings.development? ? 'desolate-reef-32871' : request.host.split('.').first
+    settings.development? ? ENV['HEROKU_SUBDOMAIN'] : request.host.split('.').first
   end
   
   def store_config

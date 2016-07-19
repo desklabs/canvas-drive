@@ -15,11 +15,17 @@ class GoogleAdapter < BaseAdapter
     client_id: 'GOOGLE_CLIENT_ID',
     account_type: 'GOOGLE_ACCOUNT_TYPE'
   }
+  FORM_FIELDS = {
+    private_key: 'textarea',
+    client_email: 'text',
+    client_id: 'text',
+    account_type: 'text'
+  }
   REFACTOR = lambda do |item|
     {
       id: item.id,
       name: item.name,
-      modified: item.modified_time,
+      modified: DateTime.parse(item.modified_time.to_s),
       size: item.size,
       type: item.mime_type == 'application/vnd.google-apps.folder' ? 'folder' : 'file'
     }

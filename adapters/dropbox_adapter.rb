@@ -6,11 +6,12 @@ class DropboxAdapter < BaseAdapter
   MAPPING = {
     access_token: 'DROPBOX_ACCESS_TOKEN'
   }
+  FORM_FIELDS = { access_token: 'text' }
   REFACTOR = lambda do |item|
     {
       id: File.basename(item['path']),
       name: File.basename(item['path']),
-      modified: item['modified'],
+      modified: DateTime.parse(item['modified'].to_s),
       size: item['bytes'],
       type: item['is_dir'] ? 'folder' : 'file'
     }

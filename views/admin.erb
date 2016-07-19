@@ -61,11 +61,11 @@
           <% adapters.each_pair do |value, name| %>
   					<fieldset id="<%= value %>" class="<%= value.to_s != @validator.adapter ? 'hidden' : '' %>">
   					  <legend><%= name %> Settings</legend>
-  					  <% "#{value.to_s.classify}::MAPPING".constantize.each_pair do |key, v| %>
+  					  <% "#{value.to_s.classify}::FORM_FIELDS".constantize.each_pair do |key, type| %>
               <div class="form-group">
                 <label for="<%= value.to_s + '-' + key.to_s %>" class="col-sm-3 control-label"><%= key.to_s.humanize %></label>
                 <div class="col-sm-9">
-                  <% if key == :private_key %>
+                  <% if type == 'textarea' %>
                   <textarea name="<%= value %>[<%= key %>]" class="form-control" id="<%= value.to_s + '-' + key.to_s %>"><%= @validator.send(value)[key.to_sym] if @validator.respond_to?(value) && @validator.send(value) %></textarea>
                   <% else %>
                   <input name="<%= value %>[<%= key %>]" value="<%= @validator.send(value)[key.to_sym] if @validator.respond_to?(value) && @validator.send(value) %>" class="form-control" id="<%= value.to_s + '-' + key.to_s %>" placeholder="<%= key.to_s.humanize %>">
