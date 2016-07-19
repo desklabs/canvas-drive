@@ -1,5 +1,5 @@
 # Desk.com Canvas: Drive
-The **Desk.com Drive** is a canvas application that adds file management to cases. It allows you to upload, download and share files to and from [Dropbox.com](https://dropbox.com), [Google Drive](https://drive.google.com) and many more.
+The **Desk.com Drive** is a canvas application that adds file management to cases. It allows you to upload, download and share files to and from [Dropbox.com](https://dropbox.com), [Google Drive](https://drive.google.com) and soon more.
 
 ## I. Deploy the Application
 First, install this application by deploying the source code to your Heroku account. To deploy your application, simply click this button:
@@ -23,8 +23,6 @@ Now that you have the application on Heroku, go ahead and create the integration
 
 7. Make note of the **Shared Key** when you create the Integration URL.
 
-![Integration URL](https://api.monosnap.com/rpc/file/download?id=EEe0KD3qbB2xaRMJDcqUruwtuOiDWT)
-
 ## III. Finish up the setup of the Application
 
 1. If you clicked the **View** button after deploying the application to Heroku you should alread see the login screen otherwise go to your Heroku URL and add "/admin" to the end.
@@ -44,11 +42,5 @@ Now display the canvas application on your Case Layout.
 
 4. Scroll over the left side of the 'Time Tracker' bar and click on the gear to open the **Edit** window. Adjust the pixel **Height** (e.g., 470) and **Position**, the order in which it appears in Case Details on the dashboard. Click **Save**.
 
-![Case Layout](https://api.monosnap.com/rpc/file/download?id=pZuUDCz0vKMrXRDjFH9hCVcE1i53qh)
-
 ## V. Dashboard Confirmation
 After you have added the canvas application to your layout and selected users, open a ticket and you should see the File Explorer under **Case Details**.
-
-![Preview  Stopped](https://api.monosnap.com/rpc/file/download?id=b709jZIF9uFTYZhIM4gdJQfN8GtgZe)
-
-![Preview  Started](https://api.monosnap.com/rpc/file/download?id=Ly4i9IjoAnnkrrrdqEyJ5njlZtKSDh)
