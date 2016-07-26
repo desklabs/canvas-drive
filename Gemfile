@@ -12,6 +12,7 @@ gem 'platform-api'
 
 gem 'activemodel'
 gem 'activesupport'
+gem 'desk_api'
 
 group :development do
   gem 'pry'

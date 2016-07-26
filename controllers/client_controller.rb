@@ -15,7 +15,7 @@ class ClientController < ApplicationController
     end
   end
 
-  before /^(?!\/(login|download))/ do
+  before /^(?!\/(login|download|form))/ do
     halt 401, '<h1>Unauthorized</h1>' unless logged_in?
   end
   
@@ -27,6 +27,10 @@ class ClientController < ApplicationController
   
   post '/login' do
     redirect '/'
+  end
+  
+  post '/form' do
+    
   end
   
   # fetches all the folders
