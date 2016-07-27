@@ -1,7 +1,3 @@
-require 'json'
-require 'base64'
-require 'openssl'
-
 module ClientHelper
   def parse_signed_request(request, max_age=3600)
     encoded_sig, enc_envelope = request.split('.', 2)
@@ -32,5 +28,24 @@ module ClientHelper
   
   def valid_token?
     settings.adapter.validate_token(params[:token], params[:folder_id], params[:file_id])
+  end
+  
+  def create_case
+    file = settings.adapter.create_file("tmp", params[:case_attachment][:attachment])
+    first_name, last_name = parse_name(params[:interaction][:name])
+    
+    Resque.enqueue(CreateCaseJob, {
+      file: file,
+      first_name: first_name,
+      last_name: last_name,
+      email: params[:interaction][:email],
+      subject: params[:email][:subject],
+      body: params[:email][:body]
+    })
+  end
+  
+  def parse_name(name)
+    name = Namae.parse(name).first
+    [name.given, name.family]
   end
 end

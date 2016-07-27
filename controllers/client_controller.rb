@@ -1,11 +1,8 @@
-require_relative 'application_controller'
-require 'active_support'
-
 class ClientController < ApplicationController
   helpers ClientHelper
   
   configure :production, :development do
-    set :protection, frame_options: "ALLOW-FROM #{ENV['DESK_DOMAIN']}"
+    set :protection, frame_options: "ALLOW-FROM #{ENV['DESK_ENDPOINT']}"
     set :adapter, ENV['ADAPTER'].classify.constantize.new if ENV['ADAPTER']
   end
   
@@ -30,7 +27,14 @@ class ClientController < ApplicationController
   end
   
   post '/form' do
+    uri      = URI(request.referer)
+    uri.path = '/customer/portal/emails/completed'
     
+    if not create_case
+      uri.query = 'error=true'
+    end
+    
+    redirect uri.to_s
   end
   
   # fetches all the folders

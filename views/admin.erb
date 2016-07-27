@@ -18,48 +18,93 @@
   				    <% end %>
 				    </div>
 				  <% end %>
-          <div class="form-group">
-            <label for="desk_domain" class="col-sm-3 control-label">Domain</label>
-            <div class="col-sm-9">
-              <input type="url" id="desk_domain" value="<%= @validator.desk_domain %>" name="desk_domain" class="form-control" placeholder="https://example.desk.com" autofocus>
+          <fieldset>
+            <legend>General Settings</legend>
+            <div class="form-group">
+              <label for="shared_key" class="col-sm-3 control-label">Shared Key</label>
+              <div class="col-sm-9">
+                <input id="shared_key" value="<%= @validator.shared_key %>" name="shared_key" class="form-control" placeholder="Shared Key">
+                <span class="help-block">Paste the shared key from the integration url (<a href="https://goo.gl/Pam9Od" target="_blank">goo.gl/Pam9Od</a>).</span>
+              </div>
             </div>
-          </div>
-          <div class="form-group">
-            <label for="shared_key" class="col-sm-3 control-label">Shared Key</label>
-            <div class="col-sm-9">
-              <input id="shared_key" value="<%= @validator.shared_key %>" name="shared_key" class="form-control" placeholder="Shared Key">
-              <span class="help-block">Paste the shared key from the integration url (<a href="https://goo.gl/Pam9Od" target="_blank">goo.gl/Pam9Od</a>).</span>
+            <div class="form-group">
+              <label for="session_secret" class="col-sm-3 control-label">Session Secret</label>
+              <div class="col-sm-9">
+                <input id="session_secret" value="<%= @validator.session_secret %>" name="session_secret" class="form-control" placeholder="Session Secret">
+              </div>
             </div>
-          </div>
-          <div class="form-group">
-            <label for="session_secret" class="col-sm-3 control-label">Session Secret</label>
-            <div class="col-sm-9">
-              <input id="session_secret" value="<%= @validator.session_secret %>" name="session_secret" class="form-control" placeholder="Session Secret">
+            <div class="form-group">
+              <label for="adapter" class="col-sm-3 control-label">Adapter</label>
+              <div class="col-sm-9">
+                <select id="adapter" name="adapter" class="form-control">
+                  <option value="">-- Please Select --</option>
+                  <% adapters.each_pair do |value, name| %>
+                  <option value="<%= value %>"<%= value.to_s == @validator.adapter ? 'selected' : '' %>><%= name %></option>
+                  <% end %>
+                </select>
+                <script>
+                  (function() {
+                    $ = function(selector) { return [].slice.call(document.querySelectorAll(selector)) }
+                    
+                    $('#adapter')[0].addEventListener('change', function() {
+                      $('fieldset.adapterset').forEach(function(item) { item.classList.add('hidden') })
+                      $('#' + $('#adapter')[0].value)[0].classList.remove('hidden')
+                    })
+                  }())
+                </script>
+              </div>
             </div>
-          </div>
-          <div class="form-group">
-            <label for="adapter" class="col-sm-3 control-label">Adapter</label>
-            <div class="col-sm-9">
-              <select id="adapter" name="adapter" class="form-control">
-                <option value="">-- Please Select --</option>
-                <% adapters.each_pair do |value, name| %>
-                <option value="<%= value %>"<%= value.to_s == @validator.adapter ? 'selected' : '' %>><%= name %></option>
-                <% end %>
-              </select>
-              <script>
-                (function() {
-                  $ = function(selector) { return [].slice.call(document.querySelectorAll(selector)) }
-                  
-                  $('#adapter')[0].addEventListener('change', function() {
-                    $('fieldset').forEach(function(item) { item.classList.add('hidden') })
-                    $('#' + $('#adapter')[0].value)[0].classList.remove('hidden')
-                  })
-                }())
-              </script>
+          </fieldset>
+          <fieldset>
+            <legend>Resque Settings</legend>
+            <div class="form-group">
+              <label for="resque_user" class="col-sm-3 control-label">Username</label>
+              <div class="col-sm-9">
+                <input id="resque_user" value="<%= @validator.resque_user %>" name="resque_user" class="form-control" placeholder="Username">
+              </div>
             </div>
-          </div>
+            <div class="form-group">
+              <label for="resque_password" class="col-sm-3 control-label">Password</label>
+              <div class="col-sm-9">
+                <input id="resque_password" value="<%= @validator.resque_password %>" name="resque_password" class="form-control" placeholder="Password">
+              </div>
+            </div>
+          </fieldset>
+					<fieldset>
+					  <legend>Desk.com API Settings</legend>
+            <div class="form-group">
+              <label for="desk_endpoint" class="col-sm-3 control-label">Domain</label>
+              <div class="col-sm-9">
+                <input type="url" id="desk_endpoint" value="<%= @validator.desk_endpoint %>" name="desk_endpoint" class="form-control" placeholder="https://example.desk.com" autofocus>
+              </div>
+            </div>
+            <div class="form-group">
+              <label for="desk_consumer_key" class="col-sm-3 control-label">Consumer Key</label>
+              <div class="col-sm-9">
+                <input type="text" id="desk_consumer_key" value="<%= @validator.desk_consumer_key %>" name="desk_consumer_key" class="form-control" placeholder="Consumer Key">
+              </div>
+            </div>
+            <div class="form-group">
+              <label for="desk_consumer_secret" class="col-sm-3 control-label">Consumer Secret</label>
+              <div class="col-sm-9">
+                <input type="text" id="desk_consumer_secret" value="<%= @validator.desk_consumer_secret %>" name="desk_consumer_secret" class="form-control" placeholder="Consumer Secret">
+              </div>
+            </div>
+            <div class="form-group">
+              <label for="desk_token" class="col-sm-3 control-label">Token</label>
+              <div class="col-sm-9">
+                <input type="text" id="desk_token" value="<%= @validator.desk_token %>" name="desk_token" class="form-control" placeholder="Token">
+              </div>
+            </div>
+            <div class="form-group">
+              <label for="desk_token_secret" class="col-sm-3 control-label">Token Secret</label>
+              <div class="col-sm-9">
+                <input type="text" id="desk_token_secret" value="<%= @validator.desk_token_secret %>" name="desk_token_secret" class="form-control" placeholder="Token Secret">
+              </div>
+            </div>
+          </fieldset>
           <% adapters.each_pair do |value, name| %>
-  					<fieldset id="<%= value %>" class="<%= value.to_s != @validator.adapter ? 'hidden' : '' %>">
+  					<fieldset id="<%= value %>" class="adapterset <%= value.to_s != @validator.adapter ? 'hidden' : '' %>">
   					  <legend><%= name %> Settings</legend>
   					  <% "#{value.to_s.classify}::FORM_FIELDS".constantize.each_pair do |key, type| %>
               <div class="form-group">

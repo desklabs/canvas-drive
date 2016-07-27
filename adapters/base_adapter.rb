@@ -1,10 +1,3 @@
-require 'active_model'
-require 'active_support/core_ext/hash'
-require 'active_support/inflector'
-require 'securerandom'
-require 'json'
-require 'redis'
-
 class BaseAdapter
   ADAPTERS    = {}
   MAPPING     = {}
@@ -86,6 +79,13 @@ class BaseAdapter
   
   def create_file(path, file)
     store.create(path, file)
+  end
+  
+  def update_path(old, new)
+    file = store.find(old)
+    if store.delete(old)
+      store.create(new, file)
+    end
   end
   
   def delete_file(path)

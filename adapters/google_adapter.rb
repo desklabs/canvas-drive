@@ -1,4 +1,3 @@
-require_relative 'base_adapter'
 require 'googleauth'
 require 'google/apis/drive_v3'
 
@@ -98,7 +97,11 @@ class GoogleAdapter < BaseAdapter
       upload_source: file[:tempfile],
       fields: FIELDS
     })
-    super("/#{folder_id.to_s}/#{file[:id].to_s}", file)
+    if super("/#{folder_id.to_s}/#{file[:id].to_s}", file) == 'ok'
+      file
+    else
+      false
+    end
   end
   
   def delete_file(folder_id, file_id)
@@ -115,6 +118,13 @@ class GoogleAdapter < BaseAdapter
     client.get_file(file.id, download_dest: dest)
     dest.rewind
     [file, dest.read]
+  end
+  
+  def update_path(folder_id, file_id)
+    old = "/tmp/#{file_id.to_s}"
+    new = "/#{folder_id.to_s}/#{file_id.to_s}"
+    # do stuff
+    super(old, new)
   end
   
   def files(folder_id, file_id = nil)

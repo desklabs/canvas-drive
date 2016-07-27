@@ -1,5 +1,3 @@
-require_relative 'application_controller'
-
 class AdminController < ApplicationController
   helpers AdminHelper
   

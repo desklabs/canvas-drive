@@ -1,4 +1,3 @@
-require_relative 'base_adapter'
 require 'dropbox_sdk'
 
 class DropboxAdapter < BaseAdapter
@@ -46,7 +45,12 @@ class DropboxAdapter < BaseAdapter
   def create_file(folder_id, file)
     path = "/#{folder_id.to_s}/#{file[:filename]}"
     file = client.put_file(path, file[:tempfile])
-    super file['path'], REFACTOR.call(file)
+    item = REFACTOR.call(file)
+    if super(file['path'], item) == 'OK'
+      item
+    else
+      false
+    end
   end
   
   def delete_file(folder_id, file_id)
@@ -58,6 +62,13 @@ class DropboxAdapter < BaseAdapter
   def download_file(folder_id, file_id)
     path = "/#{folder_id.to_s}/#{file_id.to_s}"
     [store.find(path), client.get_file(path)]
+  end
+  
+  def update_path(folder_id, file_id)
+    old = "/tmp/#{file_id.to_s}"
+    new = "/#{folder_id.to_s}/#{file_id.to_s}"
+    client.file_move(old, new)
+    super(old, new)
   end
   
   def files(folder_id, file_id = nil)

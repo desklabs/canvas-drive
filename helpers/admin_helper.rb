@@ -1,6 +1,3 @@
-require 'platform-api'
-require 'active_model'
-
 module AdminHelper
   def heroku
     if session[:heroku]
@@ -42,19 +39,31 @@ module AdminHelper
     include ActiveModel::Model
     
     MAPPING = {
-      desk_domain: 'DESK_DOMAIN',
       adapter: 'ADAPTER',
       shared_key: 'SHARED_KEY',
-      session_secret: 'SESSION_SECRET'
+      session_secret: 'SESSION_SECRET',
+      desk_endpoint: 'DESK_ENDPOINT',
+      desk_consumer_key: 'DESK_CONSUMER_KEY',
+      desk_consumer_secret: 'DESK_CONSUMER_SECRET',
+      desk_token: 'DESK_TOKEN',
+      desk_token_secret: 'DESK_TOKEN_SECRET',
+      resque_user: 'RESQUE_USER',
+      resque_password: 'RESQUE_PASSWORD'
     }
     
-    attr_accessor :desk_domain, :shared_key, :adapter, :session_secret
+    attr_accessor :desk_endpoint, :desk_consumer_key, :desk_consumer_secret,
+                  :desk_token, :desk_token_secret, :shared_key, :adapter,
+                  :session_secret, :resque_user, :resque_password
     
-    validates_presence_of :desk_domain, :shared_key, :session_secret
+    validates_presence_of :desk_endpoint, :desk_consumer_key,
+                          :desk_consumer_secret, :desk_token, :shared_key,
+                          :session_secret
+    
     validate :instance_validations
 
     def instance_validations
       validates_with "#{adapter.classify}::Validator".constantize
+      validates_with DeskValidator
     end
     
     def self.from_params(params)
@@ -108,11 +117,36 @@ module AdminHelper
       adapter_config.inject({}) do |hash, (k, v)|
         hash.merge(v => send(:"#{adapter}")[k])
       end.merge({
-        'DESK_DOMAIN' => desk_domain,
         'ADAPTER' => adapter,
         'SHARED_KEY' => shared_key,
-        'SESSION_SECRET' => session_secret
+        'SESSION_SECRET' => session_secret,
+        'DESK_ENDPOINT' => desk_endpoint,
+        'DESK_CONSUMER_KEY' => desk_consumer_key,
+        'DESK_CONSUMER_SECRET' => desk_consumer_secret,
+        'DESK_TOKEN' => desk_token,
+        'DESK_TOKEN_SECRET' => desk_token_secret,
+        'RESQUE_USER' => resque_user,
+        'RESQUE_PASSWORD' => resque_password
       })
+    end
+    
+    class DeskValidator < ActiveModel::Validator
+      def validate(record)
+        client = DeskApi::Client.new({
+          endpoint: record.desk_endpoint,
+          consumer_key: record.desk_consumer_key,
+          consumer_secret: record.desk_consumer_secret,
+          token: record.desk_token,
+          token_secret: record.desk_token_secret
+        })
+        client.by_url('/api/v2/users/me').name
+      rescue StandardError
+        record.errors.add(:desk_endpoint, 'invalid credentials')
+        record.errors.add(:desk_consumer_key, 'invalid credentials')
+        record.errors.add(:desk_consumer_secret, 'invalid credentials')
+        record.errors.add(:desk_token, 'invalid credentials')
+        record.errors.add(:desk_token_secret, 'invalid credentials')
+      end
     end
   end
 end
